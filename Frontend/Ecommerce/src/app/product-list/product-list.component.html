@@ -1,0 +1,76 @@
+<div class="container mt-4">
+  <!-- Page Heading -->
+  <h1 class="text-center mb-4">Product Inventory</h1>
+
+  <!-- Product Form -->
+   <h2 class="text-right mb-4">Add A new Product</h2>
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="mb-4">
+    <div class="mb-3">
+      <label for="name" class="form-label">Product Name:</label>
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        class="form-control"
+        [ngClass]="{ 'is-invalid': productForm.get('name')?.invalid && productForm.get('name')?.touched }"
+        required
+      />
+      <div *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched" class="invalid-feedback">
+        Name is required.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Description:</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        class="form-control"
+        [ngClass]="{ 'is-invalid': productForm.get('description')?.invalid && productForm.get('description')?.touched }"
+        required
+      ></textarea>
+      <div *ngIf="productForm.get('description')?.invalid && productForm.get('description')?.touched" class="invalid-feedback">
+        Description is required.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="price" class="form-label">Price:</label>
+      <input
+        id="price"
+        type="number"
+        formControlName="price"
+        class="form-control"
+        [ngClass]="{ 'is-invalid': productForm.get('price')?.invalid && productForm.get('price')?.touched }"
+        required
+      />
+      <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched" class="invalid-feedback">
+        Price must be a positive number.
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="productForm.invalid">Add Product</button>
+  </form>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="loading$ | async" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error$ | async as error" class="alert alert-danger" role="alert">
+    Error: {{ error }}
+  </div>
+  <h2 class="text-right mb-4">Available Products</h2>
+  <!-- Product List -->
+  <ul class="list-group">
+    <li *ngFor="let product of products$ | async" class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        <strong>{{ product.name }}</strong> - {{ product.description }} - ${{ product.price }}
+      </div>
+      <button class="btn btn-danger btn-sm" (click)="onDelete(product.id)">Delete</button>
+    </li>
+  </ul>
+</div>

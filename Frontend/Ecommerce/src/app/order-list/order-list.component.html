@@ -1,0 +1,62 @@
+<div class="container mt-4">
+    <!-- Page Heading -->
+    <h1 class="text-center mb-4">Order Inventory</h1>
+    <!-- Order Form -->
+    <h2 class="text-right mb-4">Add an Order</h2>
+    <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="mb-4">
+      <div class="mb-3">
+        <label for="status" class="form-label">Order Status:</label>
+        <input
+          id="status"
+          type="text"
+          formControlName="status"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': orderForm.get('status')?.invalid && orderForm.get('status')?.touched }"
+          required
+        />
+        <div *ngIf="orderForm.get('status')?.invalid && orderForm.get('status')?.touched" class="invalid-feedback">
+          Status is required.
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="totalAmount" class="form-label">Total Amount:</label>
+        <input
+          id="totalAmount"
+          type="number"
+          formControlName="totalAmount"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': orderForm.get('totalAmount')?.invalid && orderForm.get('totalAmount')?.touched }"
+          required
+        />
+        <div *ngIf="orderForm.get('totalAmount')?.invalid && orderForm.get('totalAmount')?.touched" class="invalid-feedback">
+          Total Amount must be a positive number.
+        </div>
+      </div>
+  
+      <button type="submit" class="btn btn-primary" [disabled]="orderForm.invalid">Add Order</button>
+    </form>
+
+    <h1 class="text-right mb-4">Avilable Orders</h1>
+    <!-- Loading Indicator -->
+    <div *ngIf="loading$ | async" class="text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  
+    <!-- Error Message -->
+    <div *ngIf="error$ | async as error" class="alert alert-danger" role="alert">
+      Error: {{ error }}
+    </div>
+  
+    <!-- Order List -->
+    <ul class="list-group">
+      <li *ngFor="let order of orders$ | async" class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <strong>Order ID:</strong> {{ order.id }} - <strong>Status:</strong> {{ order.status }} - <strong>Total Amount:</strong> ${{ order.totalAmount }}
+        </div>
+        <button class="btn btn-danger btn-sm" (click)="onDelete(order.id)">Delete</button>
+      </li>
+    </ul>
+  </div>
